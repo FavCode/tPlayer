@@ -1,4 +1,32 @@
 !function() {
+    function setCookie(c_name, value, expiredays) {
+        var exdate = new Date()
+        exdate.setDate(exdate.getDate() + expiredays)
+        document.cookie = c_name + "=" + escape(value) +
+            ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString())
+    }
+    function getCookie(c_name) {
+        if (document.cookie.length > 0) {
+            c_start = document.cookie.indexOf(c_name + "=")
+            if (c_start != -1) {
+                c_start = c_start + c_name.length + 1
+                c_end = document.cookie.indexOf(";", c_start)
+                if (c_end == -1) c_end = document.cookie.length
+                return unescape(document.cookie.substring(c_start, c_end))
+            }
+        }
+        return null
+    }
+    function resetCookie() {
+        gConfig = {};
+        gConfig[plId] = {
+            playing:0
+        };
+        setCookie("tplayer",JSON.stringify(gConfig),365);
+    }
+    function saveConfig() {
+        setCookie("tplayer",JSON.stringify(gConfig),365);
+    }
     let player = $("<div class='tenma-player'><img class='song-thumbnail'/><div class='song-info'><h4 class='song-name'></h4><small class='song-author'></small></div><div class='controls'><span class='prev'></span><span class='play-pause play'></span><span class='next'></span></div><div class='progress-bar'></div><audio></audio></div>"),jsapi = {
         play:function(id) {
             if (id != undefined && typeof(id) == "number" && id >= 0 && id < songlist.length) {
@@ -11,6 +39,8 @@
                         author += songlist[playing].artists[i].name;
                     }
                 }
+                gConfig[plId].playing = playing;
+                saveConfig();
                 player.setAuthor(author);
                 player.setSongname(songlist[playing].name);
                 player.setThumbnail(songlist[playing].album.picUrl);
@@ -36,7 +66,7 @@
         get playing() {
             return !player.getAudio().paused;
         }
-    },songlist,playing,errorcount = 0;
+    },songlist,playing,gConfig = {},plId,errorcount = 0;
     player.setSongname = function(name) {
         this.find(".song-name").text(name);
     }
@@ -98,19 +128,7 @@
         } else {
             playing++;
         }
-        let author = "";
-        for (let i = 0;i<songlist[playing].artists.length;i++) {
-            if (i != 0) {
-                author += ", " + songlist[playing].artists[i].name;
-            } else {
-                author += songlist[playing].artists[i].name;
-            }
-        }
-        player.setAuthor(author);
-        player.setSongname(songlist[playing].name);
-        player.setThumbnail(songlist[playing].album.picUrl);
-        player.getAudio().src = (location.protocol == "file:" ? "http:" : "") + "//music.163.com/song/media/outer/url?id=" + songlist[playing].id + ".mp3";
-        player.getAudio().play();
+        jsapi.play(playing);
     });
     player.getJqAudio().on("error",function() {
         player.removeClass("playing");
@@ -139,7 +157,10 @@
     window.createPlayer = function(container,playlist,autoplay = true) {
         if (typeof(playlist) == "number") {
             print("检测到playlist参数使用了number，请避免使用number");
+            playlist = playlist.toString();
         }
+        plId = playlist;
+        print("加载歌单数据...");
         $(container).append(player);
         playerResizeChecker();
         player.find(".song-info").css("max-width",parseInt(player.css("width").replace("px")) - 74 + "px");
@@ -161,7 +182,31 @@
                 }
                 songlist = tracks;
                 print("开始播放歌单 " + data.result.name);
-                playing = 0;
+                let c = getCookie("tplayer");
+                if (c == null) {
+                    playing = -1;
+                    resetCookie();
+                } else {
+                    try {
+                        let config = JSON.parse(c);
+                        if (config[plId] == undefined) {
+                            playing = -1;
+                            resetCookie();
+                        } else {
+                            gConfig = config;
+                            let pConfig = config[plId];
+                            playing = pConfig.playing;
+                            print("检测到播放器数据，跳至第" + (playing+1) + "首音乐");
+                        }
+                    } catch(e) {
+                        playing = -1;
+                        resetCookie();
+                    }
+                }
+                if (playing == -1) {
+                    playing = 0;
+                    print("未检测到播放器数据或数据读取失败，从头播放");
+                }
                 let author = "";
                 for (let i = 0;i<songlist[playing].artists.length;i++) {
                     if (i != 0) {
