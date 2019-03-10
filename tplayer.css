@@ -1,0 +1,101 @@
+@charset "utf-8";
+@keyframes rotate {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(359deg);
+    }
+}
+@font-face {
+    font-family: 'faf';
+    src: url('https://cdn.staticfile.org/font-awesome/4.7.0/fonts/fontawesome-webfont.eot?v=4.7.0');
+    src: url('https://cdn.staticfile.org/font-awesome/4.7.0/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'), url('https://cdn.staticfile.org/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2?v=4.7.0') format('woff2'), url('https://cdn.staticfile.org/font-awesome/4.7.0/fonts/fontawesome-webfont.woff?v=4.7.0') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.7.0') format('truetype'), url('https://cdn.staticfile.org/font-awesome/4.7.0/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+.tenma-player {
+    position:relative;
+    display:table-cell;
+    font-family:'Microsoft YaHei Light','Microsoft YaHei',黑体;
+    color:white;
+    border-radius:3px;
+    background-color:rgba(0,0,0,0.4);
+    padding:5px;
+    width:300px;
+    max-width:500px;
+    min-width:200px;
+}
+.tenma-player>.song-thumbnail {
+    width:64px;
+    height:64px;
+    border-radius:32px;
+    transition:all .3s linear;
+}
+.tenma-player>.song-info {
+    display:inline-block;
+    margin:2px 3px;
+    vertical-align:top;
+    overflow:hidden;
+}
+.tenma-player>.song-info>* {
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+.tenma-player>.song-info>.song-name {
+    display:inline;
+}
+.tenma-player>.song-info>.song-author {
+    margin-left:3px;
+    color:lightgray;
+}
+.tenma-player>.controls {
+    position:absolute;
+    left:75px;
+    top:32px;
+    font-family:faf;
+    font-size:24px;
+    transition:all .3s linear;
+}
+.tenma-player>.controls>* {
+    transition:all .2s linear;
+}
+.tenma-player>.controls>*:hover {
+    color:lightgray;
+}
+.tenma-player>.controls>*:active {
+    color:gray;
+}
+.tenma-player>.controls>.prev::before {
+    content:"\f053";
+}
+.tenma-player>.controls>.play-pause {
+    display:inline-block;
+    width:25px;
+    text-align:center;
+    margin:0 10px;
+}
+.tenma-player>.controls>.pause::before {
+    content:"\f04c";
+}
+.tenma-player>.controls>.play::before {
+    content:"\f04b";
+}
+.tenma-player>.controls>.next::before {
+    content:"\f054";
+}
+.tenma-player>.progress-bar {
+    width:0;
+    height:0;
+    background-color:rgba(255,255,255,0.5);
+    transition:all .1s linear;
+    position:absolute;
+    bottom:0;
+    left:0;
+}
+.tenma-player.playing>.song-thumbnail {
+    animation:rotate 30s 0s infinite linear;
+}
+.tenma-player.playing>.progress-bar {
+    height:3px;
+}
