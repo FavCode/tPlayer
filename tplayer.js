@@ -45,6 +45,10 @@
                 player.setSongname(songlist[playing].name);
                 player.setThumbnail(songlist[playing].album.picUrl);
                 player.getAudio().src = (location.protocol == "file:" ? "http:" : "") + "//music.163.com/song/media/outer/url?id=" + songlist[playing].id + ".mp3";
+                player.find(".song-thumbnail").css("animation","none");
+                setTimeout(function() {
+                    player.find(".song-thumbnail").css("animation","");
+                });
             }
             player.getAudio().play();
         },
@@ -56,6 +60,15 @@
         },
         prev:function() {
             this.play(playing-1);
+        },
+        get duration() {
+            return player.getAudio().duration;  
+        },
+        set currentTime(value) {
+            player.getAudio().currentTime = value;
+        },
+        get currentTime() {
+            return player.getAudio().currentTime;
         },
         set volume(value) {
             player.getAudio().volume = value;
@@ -144,6 +157,13 @@
     });
     player.getJqAudio().on("timeupdate",function() {
         player.find(".progress-bar").css("width",(this.currentTime / this.duration) * 100 + "%");
+        if (gConfig[plId].song == undefined) {
+            gConfig[plId].song = {id:songlist[playing].id,currentTime:this.currentTime};
+        } else {
+            gConfig[plId].song.id = songlist[playing].id;
+            gConfig[plId].song.currentTime = this.currentTime;
+        }
+        saveConfig();
     });
     function playerResizeChecker() {
         if (player.find(".song-info").css("max-width") != parseInt(player.css("width").replace("px")) - 74 + "px") {
@@ -155,6 +175,8 @@
         console.log("%ctPlayer%c" + text,"border-top-left-radius:5px;border-bottom-left-radius:5px;padding:0 5px;font-size:24px;font-family:'Microsoft YaHei Light','Microsoft YaHei';background-color:darkred;color:white;","border-top-right-radius:5px;border-bottom-right-radius:5px;padding:5px;padding-top:10px;padding-bottom:2px;font-size:14px;font-family:'Microsoft YaHei Light','Microsoft YaHei';background-color:pink;color:darkred;margin:5px;margin-left:0;");
     }
     window.createPlayer = function(container,playlist,autoplay = true) {
+        let self = createPlayer;
+        window.createPlayer = undefined;
         if (typeof(playlist) == "number") {
             print("检测到playlist参数使用了number，请避免使用number");
             playlist = playlist.toString();
@@ -182,7 +204,7 @@
                 }
                 songlist = tracks;
                 print("开始播放歌单 " + data.result.name);
-                let c = getCookie("tplayer");
+                let c = getCookie("tplayer"),cTime = -1;
                 if (c == null) {
                     playing = -1;
                     resetCookie();
@@ -196,6 +218,9 @@
                             gConfig = config;
                             let pConfig = config[plId];
                             playing = pConfig.playing;
+                            if (songlist[playing].id == pConfig.song.id) {
+                                cTime = pConfig.song.currentTime;
+                            }
                             print("检测到播放器数据，跳至第" + (playing+1) + "首音乐");
                         }
                     } catch(e) {
@@ -219,6 +244,12 @@
                 player.setThumbnail(songlist[playing].album.picUrl);
                 player.setSongname(songlist[playing].name);
                 player.getAudio().src = (location.protocol == "file:" ? "http:" : "") + "//music.163.com/song/media/outer/url?id=" + songlist[playing].id + ".mp3";
+                if (cTime != -1) {
+                    player.getJqAudio().one("timeupdate",function() {
+                        player.getAudio().currentTime = cTime;
+                        print("检测到上次播放时长，已跳转");
+                    });
+                }
                 if (autoplay) {
                     player.getAudio().play();
                 }
@@ -244,10 +275,11 @@
             error:function() {
                 print("tPlayer创建失败");
                 player.remove();
+                window.createPlayer = self;
             },
             dataType:"json"
         });
         return jsapi;
     };
-    print("tPlayer已初始化 | https://tenmahw.com/");
+    print("tPlayer已初始化 | https://github.com/FavCode/tPlayer");
 }()

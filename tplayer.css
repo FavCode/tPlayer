@@ -31,6 +31,8 @@
     height:64px;
     border-radius:32px;
     transition:all .3s linear;
+    animation:rotate 30s 0s infinite linear;
+    animation-play-state:paused;
 }
 .tenma-player>.song-info {
     display:inline-block;
@@ -94,7 +96,7 @@
     left:0;
 }
 .tenma-player.playing>.song-thumbnail {
-    animation:rotate 30s 0s infinite linear;
+    animation-play-state:running;
 }
 .tenma-player.playing>.progress-bar {
     height:3px;
