@@ -22,6 +22,8 @@
         gConfig[plId] = {
             playing:0
         };
+        gConfig["paused"] = false;
+        gConfig["volume"] = 0.5;
         setCookie("tplayer",JSON.stringify(gConfig),365);
     }
     function saveConfig() {
@@ -115,10 +117,14 @@
             player.find(".play-pause").removeClass("play");
             player.find(".play-pause").addClass("pause");
             jsapi.play();
+            gConfig["paused"] = false;
+            saveConfig();
         } else {
             player.find(".play-pause").removeClass("pause");
             player.find(".play-pause").addClass("play");
             jsapi.pause();
+            gConfig["paused"] = true;
+            saveConfig();
         }
     });
     player.getJqAudio().on("load",function() {
@@ -228,6 +234,10 @@
                         resetCookie();
                     }
                 }
+                if (gConfig["paused"] == undefined||gConfig["volume"] == undefined) {
+                    resetCookie();
+                }
+                jsapi.volume = gConfig["volume"];
                 if (playing == -1) {
                     playing = 0;
                     print("未检测到播放器数据或数据读取失败，从头播放");
@@ -243,7 +253,7 @@
                 player.setAuthor(author);
                 player.setThumbnail(songlist[playing].album.picUrl);
                 player.setSongname(songlist[playing].name);
-                player.getAudio().src = (location.protocol == "file:" ? "http:" : "") + "//music.163.com/song/media/outer/url?id=" + songlist[playing].id + ".mp3";
+                player.getAudio().src = (location.protocol == "file:" ? "https:" : "") + "//music.163.com/song/media/outer/url?id=" + songlist[playing].id + ".mp3";
                 if (cTime != -1) {
                     player.getJqAudio().one("timeupdate",function() {
                         player.getAudio().currentTime = cTime;
@@ -251,7 +261,11 @@
                     });
                 }
                 if (autoplay) {
-                    player.getAudio().play();
+                    if (!gConfig["paused"]) {
+                        player.getAudio().play();
+                    } else {
+                        print("自动播放被取消，用户曾暂停播放器");
+                    }
                 }
                 player.find(".controls").css("display","block");
                 player.find(".song-thumbnail").css("display","inline-block");
