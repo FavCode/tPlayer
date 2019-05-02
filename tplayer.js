@@ -29,7 +29,7 @@
     function saveConfig() {
         setCookie("tplayer",JSON.stringify(gConfig),365);
     }
-    let player = $("<div class='tenma-player'><img class='song-thumbnail'/><div class='song-info'><h4 class='song-name'></h4><small class='song-author'></small></div><div class='controls'><span class='prev'></span><span class='play-pause play'></span><span class='next'></span></div><div class='progress-bar'></div><audio></audio></div>"),jsapi = {
+    let player = $("<div class='tenma-player'><div class='player-body'><img class='song-thumbnail'/><div class='song-info'><h4 class='song-name'></h4><small class='song-author'></small></div><div class='controls'><span class='prev'></span><span class='play-pause play'></span><span class='next'></span></div><div class='list-toggle'></div><div class='progress-bar'></div><audio></audio></div><div class='song-list hide'></div></div>"),jsapi = {
         play:function(id) {
             if (id != undefined && typeof(id) == "number" && id >= 0 && id < songlist.length) {
                 playing = id;
@@ -47,9 +47,9 @@
                 player.setSongname(songlist[playing].name);
                 player.setThumbnail(songlist[playing].album.picUrl);
                 player.getAudio().src = (location.protocol == "file:" ? "http:" : "") + "//music.163.com/song/media/outer/url?id=" + songlist[playing].id + ".mp3";
-                player.find(".song-thumbnail").css("animation","none");
+                player.find(".player-body>.song-thumbnail").css("animation","none");
                 setTimeout(function() {
-                    player.find(".song-thumbnail").css("animation","");
+                    player.find(".player-body>.song-thumbnail").css("animation","");
                 });
             }
             player.getAudio().play();
@@ -106,25 +106,32 @@
     player.getAudio = function() {
         return this.find("audio")[0];
     }
-    player.find(".prev").on("click",function() {
+    player.find(".player-body>.controls>.prev").on("click",function() {
         jsapi.prev();
     });
-    player.find(".next").on("click",function() {
+    player.find(".player-body>.controls>.next").on("click",function() {
         jsapi.next();
     });
-    player.find(".play-pause").on("click",function() {
+    player.find(".player-body>.controls>.play-pause").on("click",function() {
         if ($(this).hasClass("play")) {
-            player.find(".play-pause").removeClass("play");
-            player.find(".play-pause").addClass("pause");
+            player.find(".player-body>.controls>.play-pause").removeClass("play");
+            player.find(".player-body>.controls>.play-pause").addClass("pause");
             jsapi.play();
             gConfig["paused"] = false;
             saveConfig();
         } else {
-            player.find(".play-pause").removeClass("pause");
-            player.find(".play-pause").addClass("play");
+            player.find(".player-body>.controls>.play-pause").removeClass("pause");
+            player.find(".player-body>.controls>.play-pause").addClass("play");
             jsapi.pause();
             gConfig["paused"] = true;
             saveConfig();
+        }
+    });
+    player.find(".player-body>.list-toggle").on("click",function() {
+        if ($(".song-list").hasClass("hide")) {
+            $(".song-list").removeClass("hide");
+        } else {
+            $(".song-list").addClass("hide");
         }
     });
     player.getJqAudio().on("load",function() {
@@ -133,13 +140,13 @@
     });
     player.getJqAudio().on("play",function() {
         player.addClass("playing");
-        player.find(".play-pause").removeClass("play");
-        player.find(".play-pause").addClass("pause");
+        player.find(".player-body>.controls>.play-pause").removeClass("play");
+        player.find(".player-body>.controls>.play-pause").addClass("pause");
     });
     player.getJqAudio().on("pause",function() {
         player.removeClass("playing");
-        player.find(".play-pause").removeClass("pause");
-        player.find(".play-pause").addClass("play");
+        player.find(".player-body>.controls>.play-pause").removeClass("pause");
+        player.find(".player-body>.controls>.play-pause").addClass("play");
     });
     player.getJqAudio().on("ended",function() {
         if (playing == songlist.length-1) {
@@ -162,7 +169,7 @@
         }
     });
     player.getJqAudio().on("timeupdate",function() {
-        player.find(".progress-bar").css("width",(this.currentTime / this.duration) * 100 + "%");
+        player.find(".player-body>.progress-bar").css("width",(this.currentTime / this.duration) * 100 + "%");
         if (gConfig[plId].song == undefined) {
             gConfig[plId].song = {id:songlist[playing].id,currentTime:this.currentTime};
         } else {
@@ -172,8 +179,8 @@
         saveConfig();
     });
     function playerResizeChecker() {
-        if (player.find(".song-info").css("max-width") != parseInt(player.css("width").replace("px")) - 74 + "px") {
-            player.find(".song-info").css("max-width",parseInt(player.css("width").replace("px")) - 74 + "px");
+        if (player.find(".player-body>.song-info").css("max-width") != parseInt(player.css("width").replace("px")) - 74 + "px") {
+            player.find(".player-body>.song-info").css("max-width",parseInt(player.css("width").replace("px")) - 74 + "px");
         }
         requestAnimationFrame(playerResizeChecker);
     }
@@ -191,12 +198,13 @@
         print("加载歌单数据...");
         $(container).append(player);
         playerResizeChecker();
-        player.find(".song-info").css("max-width",parseInt(player.css("width").replace("px")) - 74 + "px");
-        player.find(".controls").css("display","none");
-        player.find(".controls").css("opacity","0");
-        player.find(".song-thumbnail").css("display","none");
-        player.find(".song-thumbnail").css("width","0");
-        player.find(".song-thumbnail").css("height","0");
+        player.find(".player-body>.song-info").css("max-width",parseInt(player.css("width").replace("px")) - 74 + "px");
+        player.find(".player-body>.controls").css("display","none");
+        player.find(".player-body>.controls").css("opacity","0");
+        player.find(".player-body>.song-thumbnail").css("display","none");
+        player.find(".player-body>.song-thumbnail").css("width","0");
+        player.find(".player-body>.song-thumbnail").css("height","0");
+        player.find(".player-body>.list-toggle").css("opacity","0");
         player.setSongname("播放器加载中...");
         $.ajax({
             url:"https://tenmahw.com/tPlayer/tplayer.php?id=" + playlist,
@@ -209,6 +217,22 @@
                     }
                 }
                 songlist = tracks;
+                let songId = 0;
+                for (let song of songlist) {
+                    let author = "";
+                    for (let i = 0; i < song.artists.length; i++) {
+                        if (i != 0) {
+                            author += ", " + song.artists[i].name;
+                        } else {
+                            author += song.artists[i].name;
+                        }
+                    }
+                    $(".tenma-player>.song-list").append("<div class='song' data-id='" + songId + "'><img src='" + song.album.picUrl + "' class='thumbnail'/><h4 class='name'>" + song.name + "</h4><span class='author'>" + author + "</span></div>");
+                    songId++;
+                }
+                $(".tenma-player>.song-list>.song").on("click",function() {
+                    jsapi.play(parseInt($(this).data("id")));
+                });
                 print("开始播放歌单 " + data.result.name);
                 let c = getCookie("tplayer"),cTime = -1;
                 if (c == null) {
@@ -241,6 +265,7 @@
                 if (playing == -1) {
                     playing = 0;
                     print("未检测到播放器数据或数据读取失败，从头播放");
+                    resetCookie();
                 }
                 let author = "";
                 for (let i = 0;i<songlist[playing].artists.length;i++) {
@@ -267,16 +292,17 @@
                         print("自动播放被取消，用户曾暂停播放器");
                     }
                 }
-                player.find(".controls").css("display","block");
-                player.find(".song-thumbnail").css("display","inline-block");
+                player.find(".player-body>.controls").css("display","block");
+                player.find(".player-body>.song-thumbnail").css("display","inline-block");
                 setTimeout(function() {
                     let wPlaying = player.hasClass("playing");
                     player.removeClass("playing");
-                    player.find(".song-thumbnail").css("width","64px");
+                    player.find(".player-body>.song-thumbnail").css("width","64px");
                     setTimeout(function() {
-                        player.find(".song-thumbnail").css("height","64px");
+                        player.find(".player-body>.song-thumbnail").css("height","64px");
                         setTimeout(function() {
-                            player.find(".controls").css("opacity","1");
+                            player.find(".player-body>.controls").css("opacity","1");
+                            player.find(".player-body>.list-toggle").css("opacity","1");
                         },150);
                         if (wPlaying) {
                             setTimeout(function() {

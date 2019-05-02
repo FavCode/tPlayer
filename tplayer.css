@@ -26,7 +26,10 @@
     max-width:500px;
     min-width:200px;
 }
-.tenma-player>.song-thumbnail {
+.tenma-player>.player-body {
+    position:relative;
+}
+.tenma-player>.player-body>.song-thumbnail {
     width:64px;
     height:64px;
     border-radius:32px;
@@ -34,24 +37,24 @@
     animation:rotate 30s 0s infinite linear;
     animation-play-state:paused;
 }
-.tenma-player>.song-info {
+.tenma-player>.player-body>.song-info {
     display:inline-block;
     margin:2px 3px;
     vertical-align:top;
     overflow:hidden;
 }
-.tenma-player>.song-info>* {
+.tenma-player>.player-body>.song-info>* {
     white-space:nowrap;
     text-overflow:ellipsis;
 }
-.tenma-player>.song-info>.song-name {
+.tenma-player>.player-body>.song-info>.song-name {
     display:inline;
 }
-.tenma-player>.song-info>.song-author {
+.tenma-player>.player-body>.song-info>.song-author {
     margin-left:3px;
     color:lightgray;
 }
-.tenma-player>.controls {
+.tenma-player>.player-body>.controls {
     position:absolute;
     left:75px;
     top:32px;
@@ -59,45 +62,110 @@
     font-size:24px;
     transition:all .3s linear;
 }
-.tenma-player>.controls>* {
+.tenma-player>.player-body>.controls>* {
     transition:all .2s linear;
 }
-.tenma-player>.controls>*:hover {
+.tenma-player>.player-body>.controls>*:hover {
     color:lightgray;
 }
-.tenma-player>.controls>*:active {
+.tenma-player>.player-body>.controls>*:active {
     color:gray;
 }
-.tenma-player>.controls>.prev::before {
+.tenma-player>.player-body>.controls>.prev::before {
     content:"\f053";
 }
-.tenma-player>.controls>.play-pause {
+.tenma-player>.player-body>.controls>.play-pause {
     display:inline-block;
     width:25px;
     text-align:center;
     margin:0 10px;
 }
-.tenma-player>.controls>.pause::before {
+.tenma-player>.player-body>.controls>.pause::before {
     content:"\f04c";
 }
-.tenma-player>.controls>.play::before {
+.tenma-player>.player-body>.controls>.play::before {
     content:"\f04b";
 }
-.tenma-player>.controls>.next::before {
+.tenma-player>.player-body>.controls>.next::before {
     content:"\f054";
 }
-.tenma-player>.progress-bar {
+.tenma-player>.player-body>.list-toggle::before {
+    font-family:faf;
+    font-size:12px;
+    content:"\f0c9";
+}
+.tenma-player>.player-body>.list-toggle {
+    position:absolute;
+    bottom:5px;
+    right:5px;
+    transition:all .3s linear;
+}
+.tenma-player>.player-body>.progress-bar {
     width:0;
-    height:0;
+    height:3px;
     background-color:rgba(255,255,255,0.5);
     transition:all .1s linear;
     position:absolute;
     bottom:0;
     left:0;
 }
-.tenma-player.playing>.song-thumbnail {
+.tenma-player.playing>.player-body>.song-thumbnail {
     animation-play-state:running;
 }
-.tenma-player.playing>.progress-bar {
-    height:3px;
+
+.tenma-player>.song-list {
+    width:100%;
+    max-height:500px;
+    overflow:auto;
+    overflow-x:hidden;
+    word-wrap:none;
+    white-space:nowrap;
+    word-break:keep-all;
+    transition:all .3s ease-in-out;
+}
+.tenma-player>.song-list.hide {
+    max-height:0;
+}
+.tenma-player>.song-list::-webkit-scrollbar {
+    width:8px;
+    height:8px;
+}
+.tenma-player>.song-list::-webkit-scrollbar-thumb {
+    width:8px;
+    height:8px;
+    border-radius:4px;
+    background-color:#ccc;
+}
+.tenma-player>.song-list::-webkit-scrollbar-thumb:hover {
+    background-color:#aaa;
+}
+.tenma-player>.song-list::-webkit-scrollbar-thumb:active {
+    background-color:#888;
+}
+.tenma-player>.song-list>.song {
+    position:relative;
+    cursor:pointer;
+    height:32px;
+    margin:3px 0;
+}
+.tenma-player>.song-list>.song:hover {
+    background-color:rgba(255,255,255,0.3);
+}
+.tenma-player>.song-list>.song>.thumbnail {
+    width:32px;
+    height:32px;
+}
+.tenma-player>.song-list>.song>.name {
+    position:absolute;
+    top:0;
+    left:34px;
+    margin:0;
+    display:inline-block;
+}
+.tenma-player>.song-list>.song>.author {
+    position:relative;
+    top:-3px;
+    left:2px;
+    color:#ccc;
+    font-size:10px;
 }
