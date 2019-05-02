@@ -28,6 +28,7 @@
 }
 .tenma-player>.player-body {
     position:relative;
+    height:67px;
 }
 .tenma-player>.player-body>.song-thumbnail {
     width:64px;
