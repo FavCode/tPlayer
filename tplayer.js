@@ -238,6 +238,7 @@
         player.errorcount = 0;
         player.setSongname("播放器加载中...");
         player.playlist = [];
+        let loadedItems = 0;
         for (let i = 0;i<options.playlist.length;i++) {
             let item = options.playlist[i];
             if (item.type == "netease-playlist") {
@@ -269,7 +270,8 @@
                         }
                     },
                     complete:() => {
-                        if (i == options.playlist.length-1) {
+                        loadedItems++;
+                        if (loadedItems == options.playlist.length) {
                             playlistInited(player,options);
                         }
                     },
@@ -285,8 +287,9 @@
                     thumbnail:item.thumbnail || "",
                     url:item.url
                 });
+                loadedItems++;
             }
-            if (i == options.playlist.length-1&&item.type != "netease-playlist") {
+            if (loadedItems == options.playlist.length) {
                 playlistInited(player,options);
             }
         }
