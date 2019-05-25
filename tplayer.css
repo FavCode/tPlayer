@@ -15,9 +15,9 @@
     font-style: normal;
 }
 .tenma-player {
+    display:inline-block;
     position:relative;
-    display:table-cell;
-    font-family:'Microsoft YaHei Light','Microsoft YaHei',黑体;
+    font-family:Arial,'Microsoft YaHei Light','Microsoft YaHei',黑体;
     color:white;
     border-radius:3px;
     background-color:rgba(0,0,0,0.4);
@@ -27,8 +27,11 @@
     min-width:200px;
 }
 .tenma-player>.player-body {
+    white-space:nowrap;
+    transition:all .3s linear;
+    height:25px;
+    overflow:hidden;
     position:relative;
-    height:67px;
 }
 .tenma-player>.player-body>.song-thumbnail {
     width:64px;
@@ -37,6 +40,7 @@
     transition:all .3s linear;
     animation:rotate 30s 0s infinite linear;
     animation-play-state:paused;
+    overflow:hidden;
 }
 .tenma-player>.player-body>.song-info {
     display:inline-block;
@@ -96,12 +100,22 @@
     content:"\f0c9";
 }
 .tenma-player>.player-body>.list-toggle {
+    opacity:0;
     position:absolute;
     bottom:5px;
     right:5px;
     transition:all .3s linear;
 }
 .tenma-player>.player-body>.progress-bar {
+    width:100%;
+    height:8px;
+    position:absolute;
+    bottom:0;
+    left:0;
+    z-index:2;
+}
+.tenma-player>.player-body>.progress-bar>.played {
+    border-radius:1.5px;
     width:0;
     height:3px;
     background-color:rgba(255,255,255,0.5);

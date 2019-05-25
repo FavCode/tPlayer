@@ -9,10 +9,30 @@
     <title>tPlayer Demo</title>
 </head>
 <body>
+        <input type="text" placeholder="Type a Netease Playlist ID here" id="id"/>
+        <button id="create">Create</button><p>After create, object will save to <i>window.inst</i></p>
         <script src="jquery.min.js"></script>
         <script src="tplayer.js" charset="utf-8"></script>
         <script>
-        var playerInst = createPlayer("body","935836938"); //70469747
+        $("#create").on("click",() => {
+            let id = $("#id").val();
+            window.inst = createPlayer({
+                playlist:[
+                    {
+                        type:"netease-playlist",
+                        playlist:id
+                    }
+                ]
+            });
+        });
+        /*var playerInst = createPlayer({
+            playlist:[
+                {
+                    type:"netease-playlist",
+                    playlist:"935836938"
+                }
+            ]
+        }); //70469747*/
         </script>
 </body>
 </html>
