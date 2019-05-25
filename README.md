@@ -19,7 +19,7 @@ And then just create a player by simply call ```createPlayer``` function through
 
 If everything goes right, your player should be created on your page.
 
-###### Sample
+##### Sample
 This sample will create a player with Netease Playlist ```935836938``` and a MP3 file ```http://server.noip.cn:65534/Chouchou%20-%201619kHz.mp3``` with thumbnail ```http://server.noip.cn:65534/tn.jpg```
 ```
 createPlayer(
@@ -53,5 +53,7 @@ It should returns a ```object```.If not, that means player create failed.
 | Function | ```prev()``` | Play previous music in playlist |
 | Number | ```volume``` | Player volume (a number between 0-1) ```get and set``` |
 | Boolean | ```playing``` | Shows is player playing ```get``` |
+| Number | ```currentTime``` | Current played time ```get and set``` |
+| Number | ```duration``` | Duration of music ```get``` |
 
 You can visit ```rewrite``` version [here](https://tenmahw.com/tPlayer/rewrite/demo.html)
