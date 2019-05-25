@@ -7,11 +7,38 @@ And then just create a player by simply call ```createPlayer``` function through
 
 | Parameter | Description |
 | ------ | ------ |
-| ```container``` | The container of player, should be a HTML element or a selector string |
-| ```playlist``` | The ID of Netease Music playlist (Don't use ```number``` if you can) |
-| ```autoplay```(optional) | Should music play after player created |
+| ```options``` | Options for player |
+
+#### Description of ```options```
+| Type | Name | Default | Description |
+| ------ | ------ | ------ | ------ |
+| Boolean | ```autoplay``` | ```true``` | Play music after player ready? |
+| Boolean | ```random``` | ```false``` | Random choose a music after player ready? |
+| ```HTMLElement```, ```jQuery``` object or a String | ```container``` | ```document.body``` | Container of player |
+| Object | ```playlist``` | ***Required*** | Playlist of player |
 
 If everything goes right, your player should be created on your page.
+
+###### Sample
+This sample will create a player with Netease Playlist ```935836938``` and a MP3 file ```http://server.noip.cn:65534/Chouchou%20-%201619kHz.mp3``` with thumbnail ```http://server.noip.cn:65534/tn.jpg```
+```
+createPlayer(
+  {
+    playlist:[
+      {
+        type:"netease-playlist",
+        playlist:"935836938"
+      },
+      {
+        name:"1619kHz",
+        artists:"Chouchou",
+        thumbnail:"http://server.noip.cn:65534/tn.jpg",
+        url:"http://server.noip.cn:65534/Chouchou%20-%201619kHz.mp3"
+      }
+    ]
+  }
+);
+```
 
 ## Taking control of player
 If you need to control player through JavaScript, just get the returned value of ```createPlayer```.
