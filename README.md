@@ -54,4 +54,4 @@ It should returns a ```object```.If not, that means player create failed.
 | Number | ```volume``` | Player volume (a number between 0-1) ```get and set``` |
 | Boolean | ```playing``` | Shows is player playing ```get``` |
 
-You can visit ```rewrite``` version [here](https://tenmahw.com/tPlayer/rewrite)
+You can visit ```rewrite``` version [here](https://tenmahw.com/tPlayer/rewrite/demo.html)
