@@ -26,3 +26,5 @@ It should returns a ```object```.If not, that means player create failed.
 | Function | ```prev()``` | Play previous music in playlist |
 | Number | ```volume``` | Player volume (a number between 0-1) ```get and set``` |
 | Boolean | ```playing``` | Shows is player playing ```get``` |
+
+You can visit ```rewrite``` version [here](https://tenmahw.com/tPlayer/rewrite)
