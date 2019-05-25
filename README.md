@@ -31,7 +31,7 @@ createPlayer(
       },
       {
         name:"1619kHz",
-        artists:"Chouchou",
+        author:"Chouchou",
         thumbnail:"http://server.noip.cn:65534/tn.jpg",
         url:"http://server.noip.cn:65534/Chouchou%20-%201619kHz.mp3"
       }
